@@ -32,6 +32,7 @@ public class PlayerShip : MonoBehaviour
     //use forces to build momentum forward/backward
     void MoveShip()
     {
+        if (_gameController.playerAlive) {
         // S/Down = -1, W/Up = 1, None = 0.  Scale found direction with moveSpeed.
         // This is the final movement vector (force! like physics!!!!!!)
         float moveAmountThisFrame = Input.GetAxisRaw("Vertical") * _moveSpeed;
@@ -39,6 +40,7 @@ public class PlayerShip : MonoBehaviour
         Vector3 moveDirection = transform.forward * moveAmountThisFrame;
         // apply the movement to the physics object
         _rb.AddForce(moveDirection);
+        }
     }
     
     // Don't use force for this, since we want turning to be precise as fuck
