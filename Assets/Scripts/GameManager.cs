@@ -5,23 +5,28 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public bool playerActive = false;
+    public bool playerActive = true;
 
 
     [SerializeField] public float stunCooldown;
-    [SerializeField] float stunTimer;
-    float stunTimerStored;
 
-    public bool playerStunned = false;
+    //**THIS DOES NOTHING RIGHT NOW.FIX THAT**
+    public bool stunOnCooldown = false; //Checks to see if the cooldown is active or not
+
+    [SerializeField] public float stunTimer; // How long the player should be stunned for
+    public float stunTimerStored; // Gains the same value as stunTimer to be used later
+    public bool playerStunned = false; // Boolean that decides when player loses control of their ship as a status effect
+
 
     //create the instance (exciting!)
     public static GameManager Instance { get; private set; }
         public void Awake()
         {
 
-        stunTimerStored = stunTimer;
         playerActive = true;
+        stunTimerStored = stunTimer;//Stores stunTimer value inputed in SerializeField so we can reset the stunTimer after it runs once
 
+            // make sure that any duplicate instances are destroyed on Awake()
             if (Instance != null && Instance != this) // make sure that any duplicate instances are destroyed on Awake()
             {
                 Destroy(this);
@@ -36,7 +41,10 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
 
-        Stun();
+        //Only runs checkStun when another function makes playerStunned true, then runs on update until the player is no longer stunned.
+        if (playerStunned) { 
+        checkStun();
+        }
 
         if (Input.GetKeyDown(KeyCode.Backspace)) // use backspace to restart
         {
@@ -44,6 +52,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Allows game to restart
     void ReloadLevel()
     {
         int activeSceneIndex =
@@ -51,7 +60,8 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(activeSceneIndex);
     }
 
-    public void Stun()
+    // Disables player controls for a certain duration and then 
+    public void checkStun()
     {
         if (playerStunned)
         {

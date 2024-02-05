@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class stunHitbox : MonoBehaviour
+public class StunHitbox : MonoBehaviour
 {
-
-    public bool stunOnCooldown = false;
-
     //not detecting collision at all.  Need to fix this so that the debris can actually stun the player
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-            if (!stunOnCooldown)
+            Debug.Log("Hit the Player!");
+
+            if (GameManager.Instance.stunOnCooldown == false)
             {
-                GameManager.Instance.Stun();
-                stunOnCooldown = true;
+                GameManager.Instance.playerStunned = true;
+                GameManager.Instance.stunOnCooldown = true;
+                Debug.Log("Stun is on cooldown");
 
                 Invoke("stunDelay", GameManager.Instance.stunCooldown);
             }
@@ -26,7 +26,8 @@ public class stunHitbox : MonoBehaviour
 
     private void stunDelay()
     {
-        stunOnCooldown = false;
+        GameManager.Instance.stunOnCooldown = false;
+        Debug.Log("Stun is no longer on cooldown");
     }
 
 }

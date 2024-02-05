@@ -16,11 +16,16 @@ public class PlayerShip : MonoBehaviour
     [SerializeField]
     float _turnSpeed = 3f;
 
+    [SerializeField]
+    ParticleSystem _jetExhaust;
+
     Rigidbody _rb = null; //Will be stored on Awake()
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>(); //Find the Rigidbody and store it as the thing
+        _jetExhaust.GetComponent<ParticleSystem>();
+
     }
 
     public void Update()
@@ -29,6 +34,13 @@ public class PlayerShip : MonoBehaviour
         {
             GameManager.Instance.playerStunned = true;
         }
+
+        //Activates a speed up buff
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            JetBoost(); //Changes particle color and increases speed
+        }
+
     }
 
 
@@ -65,6 +77,12 @@ public class PlayerShip : MonoBehaviour
             // spin the rigidbody
             _rb.MoveRotation(_rb.rotation * turnOffset);
         }
+    }
+
+    //**THIS STILL NEEDS FUNCTIONALITY**
+    void JetBoost()
+    {
+            _jetExhaust.GetComponent<ParticleSystem>().startColor = new Color(.27f, .9f, .9f, .35f);
     }
 
     public void Kill()
