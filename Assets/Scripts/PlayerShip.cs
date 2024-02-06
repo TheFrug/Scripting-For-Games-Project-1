@@ -16,27 +16,41 @@ public class PlayerShip : MonoBehaviour
     [SerializeField]
     float _turnSpeed = 3f;
 
-    [SerializeField]
-    ParticleSystem _jetExhaust;
+    //Set up connections to GameObjects that have Particle Systems attached to them
+    public ParticleSystem MainJet;
+    public Color MainJetStartColor;
+
+    public ParticleSystem _leftExhaust;
+    public ParticleSystem _rightExhaust;
 
     Rigidbody _rb = null; //Will be stored on Awake()
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>(); //Find the Rigidbody and store it as the thing
-        _jetExhaust.GetComponent<ParticleSystem>();
+        MainJet = GameObject.Find("jetEngine_PS").GetComponent<ParticleSystem>();
 
+    }
+
+    private void Start()
+    {
+
+        MainJet = GameObject.Find("jetEngine_PS").GetComponent<ParticleSystem>(); //Finds ParticleSystem from jetEngine_PS
+        //There is a better way to do this that can allow designers to change the jet color without changing code
+        MainJetStartColor = new Color(0.91f, 0.58f, 0.22f, 0.40f); //Saves starting color as MainJetStartColor
     }
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter)) // use backspace to restart
+        if (Input.GetKeyDown(KeyCode.KeypadEnter)) //Try out stun mechanics
         {
             GameManager.Instance.playerStunned = true;
         }
 
+
+
         //Activates a speed up buff
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             JetBoost(); //Changes particle color and increases speed
         }
@@ -61,6 +75,17 @@ public class PlayerShip : MonoBehaviour
             Vector3 moveDirection = transform.forward * moveAmountThisFrame;
             // apply the movement to the physics object
             _rb.AddForce(moveDirection);
+
+            // While holding W, particle effect plays
+            if (Input.GetKey(KeyCode.W))
+            {
+                MainJet.Play();
+            }
+            // Anytime W is not held, the particle effect stops| There is probably a better way to do this
+            if (!Input.GetKey(KeyCode.W))
+            {
+                MainJet.Stop();
+            }
         }
     }
     
@@ -82,9 +107,11 @@ public class PlayerShip : MonoBehaviour
     //**THIS STILL NEEDS FUNCTIONALITY**
     void JetBoost()
     {
-            _jetExhaust.GetComponent<ParticleSystem>().startColor = new Color(.27f, .9f, .9f, .35f);
+        MainJet.GetComponent<Transform>().localScale = new Vector3(0.07f, 0.05f, 0.07f);
+        MainJet.GetComponent<ParticleSystem>().startColor = new Color(.27f, .9f, .9f, .35f);
     }
 
+    //Allows the player to be killed
     public void Kill()
     {
         Debug.Log("Player has been killed!");

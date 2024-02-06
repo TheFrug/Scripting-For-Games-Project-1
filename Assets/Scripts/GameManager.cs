@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public bool stunOnCooldown = false; //Checks to see if the cooldown is active or not
 
     [SerializeField] public float stunTimer; // How long the player should be stunned for
-    public float stunTimerStored; // Gains the same value as stunTimer to be used later
+    private float stunTimerStored; // Gains the same value as stunTimer to be used later
     public bool playerStunned = false; // Boolean that decides when player loses control of their ship as a status effect
 
 
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
         playerActive = true;
         stunTimerStored = stunTimer;//Stores stunTimer value inputed in SerializeField so we can reset the stunTimer after it runs once
 
-            // make sure that any duplicate instances are destroyed on Awake()
+            //Make sure that any duplicate instances are destroyed on Awake()
             if (Instance != null && Instance != this) // make sure that any duplicate instances are destroyed on Awake()
             {
                 Destroy(this);
@@ -46,10 +46,19 @@ public class GameManager : MonoBehaviour
         checkStun();
         }
 
-        if (Input.GetKeyDown(KeyCode.Backspace)) // use backspace to restart
+        //Backspace restarts the game
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             ReloadLevel();
         }
+
+        //ESC quits the game
+        if (Input.GetKeyDown("escape"))
+        {
+            Application.Quit();
+            Debug.Log("Quitting Game!");
+        }
+
     }
 
     //Allows game to restart
@@ -60,7 +69,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(activeSceneIndex);
     }
 
-    // Disables player controls for a certain duration and then 
+    //Disables player controls for a certain duration and sets stunOnCooldown() active so player cannot be stunned for short duration
     public void checkStun()
     {
         if (playerStunned)

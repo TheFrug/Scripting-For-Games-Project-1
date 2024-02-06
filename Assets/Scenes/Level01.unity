@@ -1345,7 +1345,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -1518,7 +1518,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.9137255, g: 0.57834846, b: 0.21960783, a: 0.3882353}
+      maxColor: {r: 0.91, g: 0.58, b: 0.22, a: 0.8509804}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -6283,8 +6283,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 12
-  _turnSpeed: 3
-  _jetExhaust: {fileID: 848845695}
+  _turnSpeed: 2
+  MainJet: {fileID: 848845695}
+  MainJetStartColor: {r: 0, g: 0, b: 0, a: 0}
+  _leftExhaust: {fileID: 0}
+  _rightExhaust: {fileID: 0}
 --- !u!65 &923116980
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6491,7 +6494,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 9.93, z: -0.14}
+  m_LocalPosition: {x: 0, y: 13.9, z: -0.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7194,7 +7197,6 @@ MonoBehaviour:
   stunCooldown: 5
   stunOnCooldown: 0
   stunTimer: 3
-  stunTimerStored: 0
   playerStunned: 0
 --- !u!4 &1467408872
 Transform:
