@@ -16,6 +16,9 @@ public class PlayerShip : MonoBehaviour
     [SerializeField]
     float _turnSpeed = 3f;
 
+    //Maximum Health for Player
+    public float playerHealth = 3;
+
     //Set up connections to GameObjects that have Particle Systems attached to them
     public ParticleSystem MainJet;
     public Color MainJetStartColor;
@@ -29,7 +32,6 @@ public class PlayerShip : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>(); //Find the Rigidbody and store it as the thing
         MainJet = GameObject.Find("jetEngine_PS").GetComponent<ParticleSystem>();
-
     }
 
     private void Start()
@@ -77,7 +79,7 @@ public class PlayerShip : MonoBehaviour
             _rb.AddForce(moveDirection);
 
             // While holding W, particle effect plays
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.W) && (GameManager.Instance.playerActive))
             {
                 MainJet.Play();
             }
@@ -114,8 +116,19 @@ public class PlayerShip : MonoBehaviour
     //Allows the player to be killed
     public void Kill()
     {
-        Debug.Log("Player has been killed!");
-        this.gameObject.SetActive(false);
-        GameManager.Instance.playerActive = false;
+        this.gameObject.SetActive(false); //Delete Game Object
+        GameManager.Instance.playerActive = false; //Remove Controls
+    }
+
+    public void Hurt(float damage)
+    {
+        playerHealth -= damage;
+        Debug.Log("Player Hit.  Health Remaining: " + playerHealth);
+
+        if (playerHealth <= 0)
+        {
+            Kill();
+            GameManager.Instance.youLose();
+        }
     }
 }

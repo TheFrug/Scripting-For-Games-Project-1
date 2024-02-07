@@ -14,6 +14,7 @@ public class HazardVolume : MonoBehaviour
         {
             // Do something!
             playerShip.Kill();
+            GameManager.Instance.youLose();
         }
     }
 }

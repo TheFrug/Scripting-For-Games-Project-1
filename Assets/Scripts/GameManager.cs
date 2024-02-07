@@ -7,18 +7,21 @@ public class GameManager : MonoBehaviour
 {
     public bool playerActive = true;
 
-
     [SerializeField] public float stunCooldown;
 
     //**THIS DOES NOTHING RIGHT NOW.FIX THAT**
     public bool stunOnCooldown = false; //Checks to see if the cooldown is active or not
 
-    [SerializeField] public float stunTimer; // How long the player should be stunned for
-    private float stunTimerStored; // Gains the same value as stunTimer to be used later
-    public bool playerStunned = false; // Boolean that decides when player loses control of their ship as a status effect
+    [SerializeField] public float stunTimer; //How long the player should be stunned for
+    private float stunTimerStored; //Gains the same value as stunTimer to be used later
+    public bool playerStunned = false; //Boolean that decides when player loses control of their ship as a status effect
+    public float winPoints; //Counts how many thingies the player has collected
+
+    public float levelResetTimer = 5;
+    private bool gameTerminated = false;
 
 
-    //create the instance (exciting!)
+    //Create the instance (exciting!)
     public static GameManager Instance { get; private set; }
         public void Awake()
         {
@@ -27,7 +30,7 @@ public class GameManager : MonoBehaviour
         stunTimerStored = stunTimer;//Stores stunTimer value inputed in SerializeField so we can reset the stunTimer after it runs once
 
             //Make sure that any duplicate instances are destroyed on Awake()
-            if (Instance != null && Instance != this) // make sure that any duplicate instances are destroyed on Awake()
+            if (Instance != null && Instance != this) //Make sure that any duplicate instances are destroyed on Awake()
             {
                 Destroy(this);
             }
@@ -43,7 +46,7 @@ public class GameManager : MonoBehaviour
 
         //Only runs checkStun when another function makes playerStunned true, then runs on update until the player is no longer stunned.
         if (playerStunned) { 
-        checkStun();
+            checkStun();
         }
 
         //Backspace restarts the game
@@ -59,6 +62,16 @@ public class GameManager : MonoBehaviour
             Debug.Log("Quitting Game!");
         }
 
+        if (gameTerminated)
+        {
+            levelResetTimer -= Time.deltaTime;
+
+                if (levelResetTimer < 0)
+            {
+                ReloadLevel();
+            }
+        }
+
     }
 
     //Allows game to restart
@@ -70,7 +83,7 @@ public class GameManager : MonoBehaviour
     }
 
     //Disables player controls for a certain duration and sets stunOnCooldown() active so player cannot be stunned for short duration
-    public void checkStun()
+    private void checkStun()
     {
         if (playerStunned)
         {
@@ -78,7 +91,7 @@ public class GameManager : MonoBehaviour
             stunTimer -= Time.smoothDeltaTime;
             if (stunTimer >= 0)
             {
-                Debug.Log("Still Stunned");
+                //Debug.Log("Still Stunned");
             }
             else
             {
@@ -88,6 +101,21 @@ public class GameManager : MonoBehaviour
                 stunTimer = stunTimerStored;
             }
         }
+    }
+
+    //Trigger Win State
+    public void youWin()
+    {
+        playerActive = false;
+        Debug.Log("You Win!  Great job!");
+        gameTerminated = true;
+    }
+
+    //Lose State triggers ReloadLevel() by toggling playerLost to true
+    public void youLose()
+    {
+        Debug.Log("You Lose! Try again");
+        gameTerminated = true;
     }
 
 }

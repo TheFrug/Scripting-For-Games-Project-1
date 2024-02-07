@@ -4,20 +4,35 @@ using UnityEngine;
 
 public class StunHitbox : MonoBehaviour
 {
-    //not detecting collision at all.  Need to fix this so that the debris can actually stun the player
+    public ParticleSystem mainJet;
+
+    private PlayerShip playerShip; //Establishes internal player
+
+
+    private void Awake()
+    {
+         playerShip = FindObjectOfType<PlayerShip>();
+    }
+
+    // Stuns player if they run into this
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-            Debug.Log("Hit the Player!");
+            mainJet = GameObject.Find("jetEngine_PS").GetComponent<ParticleSystem>();
 
             if (GameManager.Instance.stunOnCooldown == false)
             {
+                Debug.Log("Hit the Player!");
+
                 GameManager.Instance.playerStunned = true;
                 GameManager.Instance.stunOnCooldown = true;
                 Debug.Log("Stun is on cooldown");
 
                 Invoke("stunDelay", GameManager.Instance.stunCooldown);
+
+                playerShip.Hurt(1);
+                mainJet.Stop(); //Tells animation to stop because we just collided
             }
         }
             
