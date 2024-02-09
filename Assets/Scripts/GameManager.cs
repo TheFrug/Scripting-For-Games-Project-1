@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] public float stunCooldown;
 
-    //**THIS DOES NOTHING RIGHT NOW.FIX THAT**
     public bool stunOnCooldown = false; //Checks to see if the cooldown is active or not
 
     [SerializeField] public float stunTimer; //How long the player should be stunned for
@@ -43,7 +42,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-
         //Only runs checkStun when another function makes playerStunned true, then runs on update until the player is no longer stunned.
         if (playerStunned) { 
             checkStun();
@@ -64,6 +62,7 @@ public class GameManager : MonoBehaviour
 
         if (gameTerminated)
         {
+            //Decrement levelResetTimer until 0, at which point the level restarts
             levelResetTimer -= Time.deltaTime;
 
                 if (levelResetTimer < 0)
@@ -85,21 +84,14 @@ public class GameManager : MonoBehaviour
     //Disables player controls for a certain duration and sets stunOnCooldown() active so player cannot be stunned for short duration
     private void checkStun()
     {
-        if (playerStunned)
+        playerActive = false;
+        stunTimer -= Time.smoothDeltaTime;
+        if (stunTimer <= 0)
         {
-            playerActive = false;
-            stunTimer -= Time.smoothDeltaTime;
-            if (stunTimer >= 0)
-            {
-                //Debug.Log("Still Stunned");
-            }
-            else
-            {
-                Debug.Log("Done");
-                playerActive = true;
-                playerStunned = false;
-                stunTimer = stunTimerStored;
-            }
+            Debug.Log("Done");
+            playerActive = true;
+            playerStunned = false;
+            stunTimer = stunTimerStored;
         }
     }
 
