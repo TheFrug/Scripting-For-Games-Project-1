@@ -19,7 +19,7 @@ public class StunHitbox : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            mainJet = GameObject.Find("jetEngine_PS").GetComponent<ParticleSystem>();
+            mainJet = GameObject.Find("jetThruster_PS").GetComponent<ParticleSystem>();
 
             if (GameManager.Instance.stunOnCooldown == false)
             {

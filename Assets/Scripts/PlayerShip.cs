@@ -17,6 +17,7 @@ public class PlayerShip : MonoBehaviour
     private bool jetBoostActive = false;
     [SerializeField]
     private float _jetBoostSpeed;
+    
 
 
     //Set up turn speed variable
@@ -36,24 +37,45 @@ public class PlayerShip : MonoBehaviour
     [SerializeField]
     public Color jetBoostColor;
 
+    //Manage size of visual effects for each jet
+    [SerializeField]
+    Vector3 _mainJetBoostSize; //Size when boosted (decided by designer)
+    Vector3 mainJetStartSize;
+
+    // **THIS DOES NOT WORK YET. FIX THIS FIRST**
+
+    [SerializeField]
+    Vector3 _leftThrusterBoostSize;
+    Vector3 leftThrusterStartSize;
+    [SerializeField]
+    Vector3 _rightThrusterBoostSize;
+    public Vector3 rightThrusterStartSize;
+
+
+
+
+
+
+
+    //Set up Particle Systems for each jet
     public ParticleSystem MainJet;
-    public ParticleSystem _leftExhaust;
-    public ParticleSystem _rightExhaust;
+    public ParticleSystem _leftThruster;
+    public ParticleSystem _rightThruster;
 
     Rigidbody _rb = null; //Will be stored on Awake()
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>(); //Find the Rigidbody and store it as the thing
-        MainJet = GameObject.Find("jetEngine_PS").GetComponent<ParticleSystem>(); //Finds ParticleSystem on jetEngine_PS and rembers it
+        MainJet = GameObject.Find("jetThruster_PS").GetComponent<ParticleSystem>(); //Finds ParticleSystem on jetThruster_PS and rembers it
+        Vector3 rightThrusterStartSize = _rightThruster.GetComponent<Transform>().localScale; //This is not working
         checkSpeed();
     }
 
     private void Start()
     {
-        MainJet = GameObject.Find("jetEngine_PS").GetComponent<ParticleSystem>(); //Finds ParticleSystem from jetEngine_PS
+        MainJet = GameObject.Find("jetThruster_PS").GetComponent<ParticleSystem>(); //Finds ParticleSystem from jetThruster_PS
         //There is a better way to do this that can allow designers to change the jet color without changing code
-        mainJetStartColor = new Color(0.91f, 0.58f, 0.22f, 0.40f); //Saves starting color as MainJetStartColor
     }
 
     public void Update()
@@ -66,15 +88,22 @@ public class PlayerShip : MonoBehaviour
         }
 
         //Activates a speed up buff
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
+        if (Input.GetKey(KeyCode.LeftShift)) {
             JetBoost(); //Changes particle color and increases speed
         }
 
         //Ends jet boost
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
+        if (Input.GetKeyUp(KeyCode.LeftShift)) {
             JetBoostEnd(); //Returns particle effect to how it was
+        }
+
+        if (Input.GetKey(KeyCode.A)) {
+            RightThruster();
+        }
+
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            RightThrusterEnd();
         }
     
 
@@ -85,7 +114,6 @@ public class PlayerShip : MonoBehaviour
         //This happens in FixedUpdate()
         MoveShip();
         TurnShip();
-
     }
 
     //use forces to build momentum forward/backward
@@ -117,8 +145,7 @@ public class PlayerShip : MonoBehaviour
     // Don't use force for this, since we want turning to be precise as fuck
     void TurnShip()
     {
-        if (GameManager.Instance.playerActive)
-        {
+        if (GameManager.Instance.playerActive) {
             // A/Left = -1, D/Right = 1, None = 0.  Scale by turnSpeed
             // Store the vector of how the ship should turn within one frame
             float turnAmountThisFrame = Input.GetAxisRaw("Horizontal") * _turnSpeed;
@@ -133,21 +160,35 @@ public class PlayerShip : MonoBehaviour
     void JetBoost()
     {
         jetBoostActive = true;
-        MainJet.GetComponent<Transform>().localScale = new Vector3(0.07f, 0.05f, 0.07f);
+        MainJet.GetComponent<Transform>().localScale = _mainJetBoostSize;
         MainJet.startColor = jetBoostColor;
-        _rightExhaust.gameObject.SetActive(true);
-        _leftExhaust.gameObject.SetActive(true);
+        _rightThruster.gameObject.SetActive(true);
+        _leftThruster.gameObject.SetActive(true);
         checkSpeed();
     }
 
     void JetBoostEnd()
     {
         jetBoostActive = false;
-        MainJet.GetComponent<Transform>().localScale = new Vector3(0.05f, 0.05f, 0.05f);
+        MainJet.GetComponent<Transform>().localScale = mainJetStartSize;
         MainJet.startColor = mainJetStartColor;
-        _rightExhaust.gameObject.SetActive(false);
-        _leftExhaust.gameObject.SetActive(false);
+        _rightThruster.gameObject.SetActive(false);
+        _leftThruster.gameObject.SetActive(false);
         checkSpeed();
+    }
+    void RightThruster()
+    {
+        _rightThruster.gameObject.SetActive(true);
+        if (jetBoostActive)
+        {
+            _rightThruster.GetComponent<Transform>().localScale = new Vector3(0.035f, 0.04f, 0.035f);
+            //Needs to also change color
+        }
+    }
+
+    void RightThrusterEnd()
+    {
+        _rightThruster.gameObject.SetActive(false);
     }
 
     //Allows the player to be killed
@@ -162,8 +203,7 @@ public class PlayerShip : MonoBehaviour
         playerHealth -= damage;
         Debug.Log("Player Hit.  Health Remaining: " + playerHealth);
 
-        if (playerHealth <= 0)
-        {
+        if (playerHealth <= 0) {
             Kill();
             GameManager.Instance.youLose();
         }
@@ -171,12 +211,10 @@ public class PlayerShip : MonoBehaviour
 
     public void checkSpeed()
     {
-        if (jetBoostActive)
-        {
+        if (jetBoostActive) {
             adjustedSpeed = _baseMoveSpeed + _jetBoostSpeed;
         }
-        else
-        {
+        else {
             adjustedSpeed = _baseMoveSpeed;
         }
     }
