@@ -32,7 +32,9 @@ public class StunHitbox : MonoBehaviour
                 Invoke("stunDelay", GameManager.Instance.stunCooldown);
 
                 playerShip.Hurt(1);
-                mainJet.Stop(); //Tells animation to stop because we just collided
+                playerShip.MainThrusterEnd(); //Tells animation to stop because we just collided
+                playerShip.LeftThrusterEnd();
+                playerShip.RightThrusterEnd();
             }
         }
             

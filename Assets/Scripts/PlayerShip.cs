@@ -17,8 +17,6 @@ public class PlayerShip : MonoBehaviour
     private bool jetBoostActive = false;
     [SerializeField]
     private float _jetBoostSpeed;
-    
-
 
     //Set up turn speed variable
     [SerializeField]
@@ -31,82 +29,70 @@ public class PlayerShip : MonoBehaviour
 
     //Default color Set by designer
     [SerializeField]
-    public Color mainJetStartColor;
+    public Color _jetStartColor;
 
     //Jet color when JetBoost is active
     [SerializeField]
-    public Color jetBoostColor;
+    public Color _jetBoostColor;
 
     //Manage size of visual effects for each jet
     [SerializeField]
     Vector3 _mainJetBoostSize; //Size when boosted (decided by designer)
-    Vector3 mainJetStartSize;
-
-    // **THIS DOES NOT WORK YET. FIX THIS FIRST**
-
     [SerializeField]
-    Vector3 _leftThrusterBoostSize;
-    Vector3 leftThrusterStartSize;
+    Vector3 mainJetStartSize; //Main Jet Size by default
     [SerializeField]
-    Vector3 _rightThrusterBoostSize;
-    public Vector3 rightThrusterStartSize;
-
-
-
-
-
-
-
+    Vector3 _sideThrusterBoostSize; //Side Thruster size when boosted
+    [SerializeField]
+    Vector3 sideThrusterStartSize; //Side Thruster size by default
+    
     //Set up Particle Systems for each jet
-    public ParticleSystem MainJet;
-    public ParticleSystem _leftThruster;
-    public ParticleSystem _rightThruster;
+    public GameObject MainJet;
+    public GameObject LeftJet;
+    public GameObject RightJet;
 
     Rigidbody _rb = null; //Will be stored on Awake()
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>(); //Find the Rigidbody and store it as the thing
-        MainJet = GameObject.Find("jetThruster_PS").GetComponent<ParticleSystem>(); //Finds ParticleSystem on jetThruster_PS and rembers it
-        Vector3 rightThrusterStartSize = _rightThruster.GetComponent<Transform>().localScale; //This is not working
+        MainJet = GameObject.Find("jetThruster_PS"); //Finds ParticleSystem on jetThruster_PS and rembers it
+        LeftJet = GameObject.Find("leftThruster_PS"); //Finds leftThruster GameObject
+        RightJet = GameObject.Find("rightThruster_PS"); //Finds rightThruster GameObject
+        sideThrusterStartSize = LeftJet.GetComponent<Transform>().localScale;
         checkSpeed();
-    }
-
-    private void Start()
-    {
-        MainJet = GameObject.Find("jetThruster_PS").GetComponent<ParticleSystem>(); //Finds ParticleSystem from jetThruster_PS
-        //There is a better way to do this that can allow designers to change the jet color without changing code
     }
 
     public void Update()
     {
-        //transform.Rotate(0f, 1, 0f, Space.Self);
+        //transform.Rotate(0f, 1, 0f, Space.Self);  //This rotates my man to test particle animations
 
-        if (Input.GetKeyDown(KeyCode.KeypadEnter)) //Try out stun mechanics
+        if (GameManager.Instance.playerActive)
         {
-            GameManager.Instance.playerStunned = true; //This being true makes the GameManager trigger checkStun()
-        }
+            //Activates a speed up buff
+            if (Input.GetKey(KeyCode.LeftShift)) {
+                JetBoost(); //Changes particle color and increases speed
+            }
+            //Ends jet boost
+            if (Input.GetKeyUp(KeyCode.LeftShift)) {
+                JetBoostEnd(); //Returns particle effect to how it was
+            }
 
-        //Activates a speed up buff
-        if (Input.GetKey(KeyCode.LeftShift)) {
-            JetBoost(); //Changes particle color and increases speed
-        }
+            //Right Thruster Controls
+            if (Input.GetKey(KeyCode.A)) {
+                RightThruster(); //Activator
+            }
+            if (Input.GetKeyUp(KeyCode.A)) {
+                RightThrusterEnd(); //Deactivator
+            }
 
-        //Ends jet boost
-        if (Input.GetKeyUp(KeyCode.LeftShift)) {
-            JetBoostEnd(); //Returns particle effect to how it was
+            //Left Thruster Controls
+            if (Input.GetKey(KeyCode.D)) {
+                LeftThruster(); //Activator
+            }
+            if (Input.GetKeyUp(KeyCode.D)) {
+                LeftThrusterEnd(); //Deactivator
+            }
         }
-
-        if (Input.GetKey(KeyCode.A)) {
-            RightThruster();
-        }
-
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            RightThrusterEnd();
-        }
-    
-
     }
 
     private void FixedUpdate()
@@ -131,12 +117,12 @@ public class PlayerShip : MonoBehaviour
             // While holding W, particle effect plays
             if (Input.GetKey(KeyCode.W) && (GameManager.Instance.playerActive))
             {
-                MainJet.Play();
+                MainThruster();
             }
             // Anytime W is not held, the particle effect stops| There is probably a better way to do this
             if (!Input.GetKey(KeyCode.W))
             {
-                MainJet.Stop();
+                MainThrusterEnd();
             }
             
         }
@@ -156,39 +142,73 @@ public class PlayerShip : MonoBehaviour
         }
     }
 
-    //**THIS STILL NEEDS FUNCTIONALITY**
     void JetBoost()
     {
-        jetBoostActive = true;
+        jetBoostActive = true; //Used by other systems that check the state of jetBoost
+        //Sets each jet to their respective boosted sizes
         MainJet.GetComponent<Transform>().localScale = _mainJetBoostSize;
-        MainJet.startColor = jetBoostColor;
-        _rightThruster.gameObject.SetActive(true);
-        _leftThruster.gameObject.SetActive(true);
+        //THESE ARE ONLY SUPPOSED TO BE THE SIZES OF THE SIDE JETS WHILE A DIRECTIONAL KEY IS HELD
+        RightJet.GetComponent<Transform>().localScale = _sideThrusterBoostSize;
+        LeftJet.GetComponent<Transform>().localScale = _sideThrusterBoostSize;
+        //Sets each jet to their respective boosted sizes
+        MainJet.GetComponent<ParticleSystem>().startColor = _jetBoostColor;
+        RightJet.GetComponent<ParticleSystem>().startColor = _jetBoostColor;
+        LeftJet.GetComponent<ParticleSystem>().startColor = _jetBoostColor;
+        RightThruster(); //Turns on right thruster
+        LeftThruster(); //Turns on left thruster
         checkSpeed();
     }
 
     void JetBoostEnd()
     {
         jetBoostActive = false;
+        //Sets jets back to original sizes
         MainJet.GetComponent<Transform>().localScale = mainJetStartSize;
-        MainJet.startColor = mainJetStartColor;
-        _rightThruster.gameObject.SetActive(false);
-        _leftThruster.gameObject.SetActive(false);
-        checkSpeed();
-    }
-    void RightThruster()
-    {
-        _rightThruster.gameObject.SetActive(true);
-        if (jetBoostActive)
-        {
-            _rightThruster.GetComponent<Transform>().localScale = new Vector3(0.035f, 0.04f, 0.035f);
-            //Needs to also change color
+        RightJet.GetComponent<Transform>().localScale = sideThrusterStartSize;
+        LeftJet.GetComponent<Transform>().localScale = sideThrusterStartSize;
+        //Sets jets back to original color
+        MainJet.GetComponent<ParticleSystem>().startColor = _jetStartColor; 
+        RightJet.GetComponent<ParticleSystem>().startColor = _jetStartColor;
+        LeftJet.GetComponent<ParticleSystem>().startColor = _jetStartColor;
+
+        //Turns side jets off
+        if (!Input.GetKey(KeyCode.A)) {
+            RightThrusterEnd();
         }
+        if (!Input.GetKey(KeyCode.D)) {
+            LeftThrusterEnd();
+        }
+
+        checkSpeed(); //Recalculate player speed
     }
 
-    void RightThrusterEnd()
+    void MainThruster()
     {
-        _rightThruster.gameObject.SetActive(false);
+        MainJet.GetComponent<ParticleSystem>().Play();
+    }
+
+    public void MainThrusterEnd()
+    {
+        MainJet.GetComponent<ParticleSystem>().Stop();
+    }
+
+    //Function that turns right thruster on
+    void RightThruster() {
+        RightJet.GetComponent<ParticleSystem>().Play();
+    }
+
+    //Function that turns right thruster off
+    public void RightThrusterEnd() {
+        RightJet.GetComponent<ParticleSystem>().Stop();
+    }
+
+    //Function that turns left thruster on
+    void LeftThruster() {
+        LeftJet.GetComponent<ParticleSystem>().Play();
+    }
+    //Function that turns left thruster off
+    public void LeftThrusterEnd() {
+        LeftJet.GetComponent<ParticleSystem>().Stop();
     }
 
     //Allows the player to be killed
@@ -198,17 +218,19 @@ public class PlayerShip : MonoBehaviour
         GameManager.Instance.playerActive = false; //Remove Controls
     }
 
+    //Called when player is hit by something
     public void Hurt(float damage)
     {
-        playerHealth -= damage;
+        playerHealth -= damage; //Reduce playerHealth by amount of damage the source deals
         Debug.Log("Player Hit.  Health Remaining: " + playerHealth);
 
         if (playerHealth <= 0) {
-            Kill();
-            GameManager.Instance.youLose();
+            Kill(); //Runs kill as a lose state
+            GameManager.Instance.youLose(); //Informs player they lost.  Lmao
         }
     }
 
+    //Runs calculation for movement speed based on multiple calculation
     public void checkSpeed()
     {
         if (jetBoostActive) {
