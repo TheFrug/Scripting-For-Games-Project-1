@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class HazardVolume : MonoBehaviour
 {
+
+    AudioSource audioSource;
+
+    private void Awake()
+    {
+        audioSource = this.GetComponent<AudioSource>();
+    }
     private void OnTriggerEnter(Collider other)
     {
         // Check if it's the player
@@ -14,6 +21,7 @@ public class HazardVolume : MonoBehaviour
         {
             // Do something!
             playerShip.Kill();
+            audioSource.Play();
             GameManager.Instance.youLose();
         }
     }

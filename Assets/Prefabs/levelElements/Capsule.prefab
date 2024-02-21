@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &9136866813235056418
+--- !u!1 &526085278081126859
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,49 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9136866813235056419}
-  - component: {fileID: 9136866813235056422}
-  - component: {fileID: 9136866813235056421}
-  - component: {fileID: 9136866813235056420}
-  - component: {fileID: 9136866813235056424}
-  - component: {fileID: 9136866813235056423}
-  - component: {fileID: 976733569229076799}
+  - component: {fileID: 526085278081126862}
+  - component: {fileID: 526085278081126863}
+  - component: {fileID: 526085278081126856}
+  - component: {fileID: 526085278081126857}
+  - component: {fileID: 526085278081126858}
+  - component: {fileID: 8622973898657867459}
   m_Layer: 0
-  m_Name: Debris
+  m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9136866813235056419
+--- !u!4 &526085278081126862
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136866813235056418}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.73, y: 1.62, z: 5.02}
-  m_LocalScale: {x: 3.5633, y: 3.5633, z: 3.5633}
+  m_GameObject: {fileID: 526085278081126859}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.11, y: 0, z: 6.26}
+  m_LocalScale: {x: 1.4861, y: 1.4861, z: 1.4861}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &9136866813235056422
+--- !u!33 &526085278081126863
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136866813235056418}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &9136866813235056421
+  m_GameObject: {fileID: 526085278081126859}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &526085278081126856
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136866813235056418}
+  m_GameObject: {fileID: 526085278081126859}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -65,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7fb7a30abc505c545b66ed81e8fbb0f1, type: 2}
+  - {fileID: 2100000, guid: 8afdc9ca54abc1c4f9172214eeb52f6f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,59 +86,48 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &9136866813235056420
-BoxCollider:
+--- !u!136 &526085278081126857
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136866813235056418}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &9136866813235056424
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136866813235056418}
+  m_GameObject: {fileID: 526085278081126859}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9136866813235056423
+--- !u!114 &526085278081126858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136866813235056418}
+  m_GameObject: {fileID: 526085278081126859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a016fa1615a79ba458ca337882d935df, type: 3}
+  m_Script: {fileID: 11500000, guid: b7bf552df0f96f84cb74e12c2a553fa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainJet: {fileID: 0}
-  audioSource: {fileID: 976733569229076799}
-  stunSound: {fileID: 8300000, guid: 27528ef7a11e49c45a90dc4a515273a1, type: 3}
---- !u!82 &976733569229076799
+  powerUps: 0
+  audioSource: {fileID: 8622973898657867459}
+  JetBoostPowerUp: {fileID: 8300000, guid: d9c556a529a8b914183439b97b2a1276, type: 3}
+  ShieldPowerUp: {fileID: 8300000, guid: 9e3cbae60543db54db70913fb47a7b13, type: 3}
+--- !u!82 &8622973898657867459
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136866813235056418}
+  m_GameObject: {fileID: 526085278081126859}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: d9c556a529a8b914183439b97b2a1276, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

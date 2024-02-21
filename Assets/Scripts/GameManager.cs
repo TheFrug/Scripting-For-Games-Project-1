@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    PlayerShip playerShip;
     public bool playerActive = true;
 
     [SerializeField] public float stunCooldown;
@@ -18,6 +20,11 @@ public class GameManager : MonoBehaviour
 
     public float levelResetTimer = 5;
     private bool gameTerminated = false;
+
+    AudioSource audioSource;
+    [SerializeField]
+    public AudioClip stunEnd;
+    public AudioClip youWinSound;
 
 
     //Create the instance (exciting!)
@@ -88,6 +95,7 @@ public class GameManager : MonoBehaviour
         stunTimer -= Time.smoothDeltaTime;
         if (stunTimer <= 0)
         {
+            playerShip.audioSource.PlayOneShot(stunEnd);
             Debug.Log("Done");
             playerActive = true;
             playerStunned = false;
@@ -99,6 +107,8 @@ public class GameManager : MonoBehaviour
     public void youWin()
     {
         playerActive = false;
+        playerShip.audioSource.PlayOneShot(youWinSound);
+        playerShip.MainThrusterEnd();
         Debug.Log("You Win!  Great job!");
         gameTerminated = true;
     }

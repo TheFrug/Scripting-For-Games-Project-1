@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class winCondition : MonoBehaviour
 {
+    public AudioClip CoinGet;
+    private bool pickedUp = false;
+
+    ParticleSystem ps_winNugget;
+
+    private void Awake()
+    {
+        ps_winNugget = this.GetComponent<ParticleSystem>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -11,13 +20,19 @@ public class winCondition : MonoBehaviour
             = other.gameObject.GetComponent<PlayerShip>();
         if (playerShip != null)
         {
-            GameManager.Instance.winPoints += 1; //Increments win condition
-            this.gameObject.SetActive(false); //Makes the object disappear
-            Debug.Log("Points: " + GameManager.Instance.winPoints);
-
-            if (GameManager.Instance.winPoints >= 5)
+            if (!pickedUp)
             {
-                GameManager.Instance.youWin();
+                GameManager.Instance.winPoints += 1; //Increments win condition
+                this.GetComponent<Renderer>().enabled = false; //Makes the object disappear
+                Debug.Log("Points: " + GameManager.Instance.winPoints);
+                pickedUp = true;
+                ps_winNugget.Play();
+                this.GetComponent<AudioSource>().PlayOneShot(CoinGet);
+
+                if (GameManager.Instance.winPoints >= 5)
+                {
+                    GameManager.Instance.youWin();
+                }
             }
         }
     }
